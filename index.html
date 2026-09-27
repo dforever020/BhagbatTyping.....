@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagbat Typing Master</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
+        <header class="top-bar">
+            <div class="logo">
+                <span class="logo-icon">B</span>
+                <span class="logo-text">BHAGBAT TYPING</span>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="card">
+                <h2>Select Exam Category</h2>
+                <div class="button-group">
+                    <button id="btnBSF" class="btn active" onclick="selectCategory('BSF HCM')">BSF HCM</button>
+                    <button id="btnCRPF" class="btn" onclick="selectCategory('CRPF')">CRPF</button>
+                </div>
+
+                <div class="option-group">
+                    <label for="passageSelect">Choose Passage:</label>
+                    <select id="passageSelect"></select>
+                </div>
+
+                <div class="option-group toggle-group">
+                    <label for="hideTextToggle">Hide Paragraph Text during test?</label>
+                    <input type="checkbox" id="hideTextToggle">
+                </div>
+
+                <button class="btn-primary" onclick="startTypingTest()">Start Test (10 Mins)</button>
+            </div>
+
+            <div class="card">
+                <h3>Recent Test History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Net Speed</th>
+                            <th>Accuracy</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr><td colspan="5" style="text-align:center;">No history recorded yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Typing Test Screen -->
+    <div id="testScreen" class="screen">
+        <header class="test-header">
+            <h2 id="currentCatTitle">BSF HCM Test</h2>
+            <div class="timer-box">Time Remaining: <span id="timer">10:00</span></div>
+        </header>
+
+        <div class="test-container">
+            <div id="paragraphBox" class="paragraph-display"></div>
+            <textarea id="typedInput" placeholder="Start typing here..." autofocus autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+            <button class="btn-primary danger" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="screen">
+        <div class="result-container">
+            <div class="result-header">
+                <h2>TYPING TEST RESULT</h2>
+                <span id="resCategory" class="sub-title">BSF HCM</span>
+            </div>
+
+            <div class="status-banner">
+                <div class="error-badge">YOUR ERROR: <span id="resTopYourError">0.00%</span></div>
+                <div id="resTopStatus" class="status-pass-badge">PASS</div>
+            </div>
+
+            <div class="qualification-box">
+                <div id="qualHeader" class="qual-title">
+                    <span id="qualIcon">✔</span>
+                    <span id="qualText">QUALIFIED</span>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <span>Gross Speed (WPM)</span>
+                    <strong id="resGross">0.00</strong>
+                </div>
+                <div class="metric-box highlighted">
+                    <span>Net Speed (WPM)</span>
+                    <strong id="resNet">0.00</strong>
+                </div>
+                <div class="metric-box">
+                    <span>Accuracy</span>
+                    <strong id="resAcc">0.00 %</strong>
+                </div>
+                <div class="metric-box">
+                    <span>Error Percentage</span>
+                    <strong id="resErr">0.00 %</strong>
+                </div>
+            </div>
+
+            <div class="details-table">
+                <table>
+                    <tr><td>Given Words</td><td id="resGivenWords">0</td></tr>
+                    <tr><td>Typed Words</td><td id="resTypedWords">0</td></tr>
+                    <tr><td>Omission / Commission Mistakes</td><td id="resOmission">0</td></tr>
+                    <tr><td>Full Mistakes</td><td id="resFullMistakes">0</td></tr>
+                    <tr><td>Half Mistakes</td><td id="resHalfMistakes">0</td></tr>
+                    <tr><td>Total Error Units</td><td id="resTotalErrorUnits">0.0</td></tr>
+                    <tr><td>Mistakes Ignored (5% Max)</td><td id="resMistakesIgnored">0.0</td></tr>
+                    <tr><td>Total Time Taken</td><td id="resTimeTaken">10:00</td></tr>
+                </table>
+            </div>
+
+            <div class="text-comparison">
+                <h3>Your Typed Text:</h3>
+                <div id="resTypedParagraph" class="text-box"></div>
+                
+                <h3>Original Text:</h3>
+                <div id="resOriginalParagraph" class="text-box"></div>
+            </div>
+
+            <button class="btn-primary" onclick="nav('homeScreen')">Back to Home</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
