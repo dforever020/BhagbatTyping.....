@@ -1,141 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhagbat Typing Master</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A R TYPING MASTER - BSF HCM TEST</title>
+<style>
+    :root {
+        --primary-color: #003366;
+        --secondary-color: #0056b3;
+        --bg-color: #f4f7f6;
+        --correct-color: #28a745;
+        --wrong-color: #dc3545;
+        --current-color: #ffc107;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header {
+        text-align: center;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 26px;
+    }
+
+    .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        background: #eef2f5;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .control-group label {
+        font-weight: bold;
+        font-size: 13px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    select, input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .stats-bar {
+        display: flex;
+        justify-content: space-around;
+        background: var(--primary-color);
+        color: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .passage-box {
+        height: 180px;
+        overflow-y: auto;
+        border: 2px solid #ccc;
+        padding: 15px;
+        font-size: 18px;
+        line-height: 1.6;
+        border-radius: 6px;
+        background: #fafafa;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        user-select: none;
+    }
+
+    .char {
+        position: relative;
+    }
+
+    .char.correct {
+        color: var(--correct-color);
+        background-color: #e8f5e9;
+    }
+
+    .char.wrong {
+        color: var(--wrong-color);
+        background-color: #ffebee;
+        text-decoration: underline;
+    }
+
+    .char.current {
+        background-color: var(--current-color);
+        border-radius: 2px;
+    }
+
+    .typing-area {
+        width: 100%;
+        height: 120px;
+        font-size: 18px;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 2px solid var(--primary-color);
+        border-radius: 6px;
+        resize: none;
+        outline: none;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    button {
+        flex: 1;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-start { background-color: var(--primary-color); color: #fff; }
+    .btn-start:hover { background-color: var(--secondary-color); }
+    .btn-reset { background-color: #6c757d; color: #fff; }
+
+    /* Result Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        width: 450px;
+        text-align: center;
+    }
+
+    .modal-content h2 { color: var(--primary-color); margin-top: 0; }
+
+    .result-table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+    }
+
+    .result-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .result-table td:last-child {
+        text-align: right;
+        font-weight: bold;
+    }
+</style>
 </head>
 <body>
 
-    <!-- Home Screen -->
-    <div id="homeScreen" class="screen active">
-        <header class="top-bar">
-            <div class="logo">
-                <span class="logo-icon">B</span>
-                <span class="logo-text">BHAGBAT TYPING</span>
-            </div>
-        </header>
-
-        <main class="container">
-            <div class="card">
-                <h2>Select Exam Category</h2>
-                <div class="button-group">
-                    <button id="btnBSF" class="btn active" onclick="selectCategory('BSF HCM')">BSF HCM</button>
-                    <button id="btnCRPF" class="btn" onclick="selectCategory('CRPF')">CRPF</button>
-                </div>
-
-                <div class="option-group">
-                    <label for="passageSelect">Choose Passage:</label>
-                    <select id="passageSelect"></select>
-                </div>
-
-                <div class="option-group toggle-group">
-                    <label for="hideTextToggle">Hide Paragraph Text during test?</label>
-                    <input type="checkbox" id="hideTextToggle">
-                </div>
-
-                <button class="btn-primary" onclick="startTypingTest()">Start Test (10 Mins)</button>
-            </div>
-
-            <div class="card">
-                <h3>Recent Test History</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Category</th>
-                            <th>Net Speed</th>
-                            <th>Accuracy</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                        <tr><td colspan="5" style="text-align:center;">No history recorded yet.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
+<div class="container">
+    <div class="header">
+        <h1>A R TYPING MASTER</h1>
+        <small>BSF HCM TYPING TEST EXAM PORTAL</small>
     </div>
 
-    <!-- Typing Test Screen -->
-    <div id="testScreen" class="screen">
-        <header class="test-header">
-            <h2 id="currentCatTitle">BSF HCM Test</h2>
-            <div class="timer-box">Time Remaining: <span id="timer">10:00</span></div>
-        </header>
+    <div class="controls-grid">
+        <div class="control-group">
+            <label for="passageSelect">Select Test Passage:</label>
+            <select id="passageSelect"></select>
+        </div>
 
-        <div class="test-container">
-            <div id="paragraphBox" class="paragraph-display"></div>
-            <textarea id="typedInput" placeholder="Start typing here..." autofocus autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
-            <button class="btn-primary danger" onclick="submitTest()">Submit Test</button>
+        <div class="control-group">
+            <label for="timeLimit">Timer Options:</label>
+            <select id="timeLimit" onchange="toggleCustomTime()">
+                <option value="1">1 Minute</option>
+                <option value="2">2 Minutes</option>
+                <option value="5" selected>5 Minutes</option>
+                <option value="10">10 Minutes</option>
+                <option value="30">30 Minutes (Max)</option>
+                <option value="custom">Custom Time</option>
+            </select>
+        </div>
+
+        <div class="control-group" id="customTimeGroup" style="display:none;">
+            <label for="customTime">Custom Minutes (Max 30):</label>
+            <input type="number" id="customTime" min="0.5" max="30" step="0.5" value="5">
+        </div>
+
+        <div class="control-group">
+            <label for="backspaceOpt">Backspace Settings:</label>
+            <select id="backspaceOpt">
+                <option value="allowed">Backspace Allowed</option>
+                <option value="disabled">Backspace Disabled</option>
+            </select>
         </div>
     </div>
 
-    <!-- Result Screen -->
-    <div id="resultScreen" class="screen">
-        <div class="result-container">
-            <div class="result-header">
-                <h2>TYPING TEST RESULT</h2>
-                <span id="resCategory" class="sub-title">BSF HCM</span>
-            </div>
-
-            <div class="status-banner">
-                <div class="error-badge">YOUR ERROR: <span id="resTopYourError">0.00%</span></div>
-                <div id="resTopStatus" class="status-pass-badge">PASS</div>
-            </div>
-
-            <div class="qualification-box">
-                <div id="qualHeader" class="qual-title">
-                    <span id="qualIcon">✔</span>
-                    <span id="qualText">QUALIFIED</span>
-                </div>
-            </div>
-
-            <div class="metrics-grid">
-                <div class="metric-box">
-                    <span>Gross Speed (WPM)</span>
-                    <strong id="resGross">0.00</strong>
-                </div>
-                <div class="metric-box highlighted">
-                    <span>Net Speed (WPM)</span>
-                    <strong id="resNet">0.00</strong>
-                </div>
-                <div class="metric-box">
-                    <span>Accuracy</span>
-                    <strong id="resAcc">0.00 %</strong>
-                </div>
-                <div class="metric-box">
-                    <span>Error Percentage</span>
-                    <strong id="resErr">0.00 %</strong>
-                </div>
-            </div>
-
-            <div class="details-table">
-                <table>
-                    <tr><td>Given Words</td><td id="resGivenWords">0</td></tr>
-                    <tr><td>Typed Words</td><td id="resTypedWords">0</td></tr>
-                    <tr><td>Omission / Commission Mistakes</td><td id="resOmission">0</td></tr>
-                    <tr><td>Full Mistakes</td><td id="resFullMistakes">0</td></tr>
-                    <tr><td>Half Mistakes</td><td id="resHalfMistakes">0</td></tr>
-                    <tr><td>Total Error Units</td><td id="resTotalErrorUnits">0.0</td></tr>
-                    <tr><td>Mistakes Ignored (5% Max)</td><td id="resMistakesIgnored">0.0</td></tr>
-                    <tr><td>Total Time Taken</td><td id="resTimeTaken">10:00</td></tr>
-                </table>
-            </div>
-
-            <div class="text-comparison">
-                <h3>Your Typed Text:</h3>
-                <div id="resTypedParagraph" class="text-box"></div>
-                
-                <h3>Original Text:</h3>
-                <div id="resOriginalParagraph" class="text-box"></div>
-            </div>
-
-            <button class="btn-primary" onclick="nav('homeScreen')">Back to Home</button>
-        </div>
+    <div class="stats-bar">
+        <div>Time Left: <span id="timer">05:00</span></div>
+        <div>Gross WPM: <span id="grossWpm">0</span></div>
+        <div>Accuracy: <span id="accuracy">100%</span></div>
+        <div>Errors: <span id="errors">0</span></div>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="passage-box" id="passageBox"></div>
+
+    <textarea class="typing-area" id="typingArea" placeholder="Click 'Start Test' button to begin..." disabled></textarea>
+
+    <div class="btn-container">
+        <button class="btn-start" id="startBtn" onclick="startTest()">Start Test</button>
+        <button class="btn-reset" onclick="resetTest()">Reset Test</button>
+    </div>
+</div>
+
+<!-- Modal Results Window -->
+<div class="modal" id="resultModal">
+    <div class="modal-content">
+        <h2>BSF HCM Typing Result</h2>
+        <table class="result-table">
+            <tr><td>Total Time Taken:</td><td id="resTime">0 mins</td></tr>
+            <tr><td>Total Keystrokes:</td><td id="resKeys">0</td></tr>
+            <tr><td>Gross Speed (WPM):</td><td id="resGross">0</td></tr>
+            <tr><td>Net Speed (WPM):</td><td id="resNet">0</td></tr>
+            <tr><td>Accuracy:</td><td id="resAcc">0%</td></tr>
+            <tr><td>Total Errors:</td><td id="resErrors">0</td></tr>
+        </table>
+        <button class="btn-start" onclick="closeResult()">Close</button>
+    </div>
+</div>
+
+<script>
+const passages = [
+    {
+        title: "BSF HCM TYPING TEST-1",
+        text: `The skill of typing has evolved from a specialized mechanical task into a fundamental pillar of modern communication and productivity that defines how we interact with the world around us. In our current digital landscape, the ability to translate thoughts into text quickly and accurately is essential for everything from professional correspondence and academic research to personal social interaction and creative expression. Mastering the keyboard through the dedicated practice of touch typing allows an individual to move past the physical limitations of the hardware, enabling a seamless flow of ideas directly onto the screen without the distraction of looking down at their hands. This proficiency not only saves a significant amount of time over the course of a day but also reduces the cognitive load required to operate a computer, letting the user focus entirely on the quality, tone, and creativity of their message rather than the location of individual letters. As we continue to integrate technology into every aspect of our lives, typing remains the primary bridge between human intent and digital execution, serving as a vital literacy skill that empowers people to navigate the information age with confidence and ease. Beyond mere speed, the art of typing involves a deep connection between the mind and the muscles of the fingers, creating a rhythmic movement that can become almost meditative when a writer is in a state of flow. This physical connection to language allows for a unique form of reflection where the speed of the fingers matches the speed of thought, ensuring that no insight is lost in the transition from brain to binary code. Even as voice recognition technology improves, typing offers a level of privacy, precision, and quiet focus that speaking aloud cannot replicate, making it an irreplaceable tool for those who work in shared spaces or handle sensitive information. The history of the keyboard itself, moving from the heavy mechanical levers of the early twentieth century to the haptic glass of modern smartphones, mirrors the rapid advancement of human civilization and our constant desire for faster and more efficient ways to share knowledge. By investing time in learning proper form and ergonomics, a typist protects their long term health while gaining a superpower that increases their value in the workplace and their ability to stay connected with friends and family across the globe. Whether one is coding complex software, drafting a heartfelt letter, or simply searching for answers to life's many questions, the humble act of typing serves as the foundational interface of the modern era. It is a skill that bridges generations, allowing an older professional to mentor a young student and enabling global collaborations that were once thought impossible. As digital devices become even more portable and integrated into our clothing and surroundings, the fundamental concept of character input remains the gold standard for accuracy. Even the layout of the keys, which has remained largely unchanged for over a century, stands as a testament to the enduring nature of this human machine interface. Learning to type well is not just about vocational training; it is about reclaiming time and reducing the friction between a person and their goals. Every keystroke is a choice and every sentence is a step toward a more connected future where ideas are the most valuable currency. By honing this craft, we ensure that our digital voices are heard clearly and that our contributions to the global conversation are limited only by our imaginations rather than our technical abilities. The impact of high speed typing is felt most deeply during intense periods of work where deadlines are tight and the pressure to perform is high, as the skilled typist can produce high volumes of text without the physical fatigue that plagues those who hunt and peck. This efficiency ripples outward, affecting overall organizational productivity and personal well being.`
+    },
+    {
+        title: "BSF HCM TYPING TEST-2",
+        text: `Eating a balanced and healthy diet is one of the most important things you can do to take care of your body and mind. In our busy world, it is often tempting to reach for fast food or prepackaged snacks because they are convenient and taste good. However, what we put into our bodies acts as fuel, and the quality of that fuel determines how well we can perform our daily tasks. Understanding the basics of nutrition and making small, consistent changes can lead to a much longer and happier life. When we talk about healthy eating, we do not mean strict diets that leave you feeling hungry or unhappy. Instead, it is about finding a balance that provides your body with the vitamins and minerals it needs to stay strong and fight off illness One of the main benefits of healthy eating is the boost in energy levels. Many people rely on sugary drinks or caffeine to get through the day, but these often lead to a crash later on. Complex carbohydrates, such as whole grains, oats, and brown rice, release energy slowly throughout the day. This means you can stay focused at work or school without feeling tired in the afternoon. Along with energy, a good diet helps with weight management. Maintaining a healthy weight reduces the pressure on your heart and joints, making it easier to stay active as you get older. By choosing whole foods over processed ones, you naturally consume fewer calories while feeling more satisfied. Physical health is only one part of the story, as nutrition also plays a huge role in mental well-being. Recent studies have shown that there is a strong connection between the gut and the brain. Eating plenty of fruits, vegetables, and healthy fats can improve your mood and reduce feelings of stress. Foods rich in omega three fatty acids, such as fish or walnuts, are particularly good for brain health and memory. When you eat well, you are likely to sleep better, which in turn helps you handle the challenges of daily life with a calmer and more positive attitude. It is amazing how much a simple change in your meals can change the way you see the world. Another critical reason to focus on healthy eating is the prevention of long term diseases. A diet high in salt, sugar, and saturated fats is a leading cause of heart disease, type two diabetes, and high blood pressure. By filling your plate with colorful vegetables and lean proteins, you are building a defense system for your body. Many vegetables contain antioxidants that protect your cells from damage. Over time, these healthy choices add up, significantly lowering your risk of ending up in the hospital. It is much easier to prevent health problems through good food now than it is to treat them with medicine later in life. For many people, the biggest challenge to healthy eating is the cost or the time required for cooking. However, eating well does not have to be expensive or complicated. Buying seasonal produce is often much cheaper than buying out of season items. Additionally, staple foods like beans, lentils, and eggs are very affordable and packed with nutrition. Preparing meals at home also gives you complete control over the ingredients, allowing you to avoid hidden sugars and excessive salt that are common in restaurant food. You can start by making simple swaps, like choosing water over soda or fruit over a candy bar. These small steps are much more effective than trying to change everything at once Healthy eating is also a wonderful way to bring people together. Sharing a home cooked meal with friends or family creates a sense of community and joy. It provides an opportunity to slow down and appreciate the flavors of fresh food. Teaching children about nutrition from a young age is one of the greatest gifts a parent can give. When kids learn to enjoy a variety of foods, they develop habits that will keep them healthy for the rest of their lives. It is about creating a culture of wellness that values quality and balance over quick fixes and fads.`
+    },
+    {
+        title: "BSF HCM TYPING TEST - 3",
+        text: `This disclosure encouraged a huge wave of litigation, and even the formation of something called the National Science Panel of scientists in the relevant fields appointed by federal judge Samuel Pointer, to whom thousands of these cases had been sent. After years of sifting through enormous boxes of documents, the panel concluded that there was no evidence of any damage caused by these implants. However, that there was no evidence of such damage is not the same as there being evidence that there was no such damage. Nor was the possibility ever seriously considered that leakage from these implants might prompt a serious reaction in some patients. Sadly, after years of litigation and millions of dollars spent on all this, we still really don't know the truth. The leading US case on the admissibility of expert testimony is Daubert v. Merrell Dow Pharmaceuticals (1993). It set the current standard by which US judges assess whether proffered expert testimony is good enough for a jury to hear. The drug at issue in this case was Bendectin, prescribed for morning sickness. The plaintiffs believed that this drug caused limb-reduction birth defects; the manufacturers denied this. Merrell had already withdrawn the drug from the US market in 1984 - not admitting that it was in any way damaging, but citing the costs of litigation as making it no longer worth selling in the US. Dr Done, expert witness for the plaintiffs, maintained that there was evidence that Bendectin caused birth defects. The manufacturers strenuously denied this, and stressed that they had no fewer than thirty studies published in peer-reviewed journals that showed no such link. The Supreme Court found that there wasn't the evidence to show the plaintiffs' case good enough for their expert to be heard by a jury. Moreover, they made 'peer review and publication' one indication that expert evidence is 'scientific knowledge', and therefore good enough to be admitted - a criterion still used. Subsequent discussion raised questions about the independence of some of the 'peer-reviewed publications' cited in the case. In his final ruling in Daubert, Judge Kozinski argued that peerreviewed publication is as good an indication of scientific reliability as we can hope for. However, I believe this underestimates the complexity of peer review in fields affected by litigation or commercial interests. Dr Brent, expert witness for the manufacturers, insisted that if Bendectin were teratogenic (defect-forming), then after it was taken off the US market the rate of birth defects would have been higher in Canada, where it remained available, than in the US - and this wasn't seen. However, obstetricians had long realized that you could mimic the effects of Bendectin by taking a vitamin B6 pill and half a Unisom tablet. If Bendectin was harmful, then this widely-used substitute which mimicked the drug's effects could potentially have masked such a difference between the two countries, raising doubts about this line of reasoning. To my surprise, in 2013 the drug returned to the US market, now made by a Canadian company under the name Diclegis. The FDA had never withdrawn its approval for Bendectin, so the company had only to prove that the drug was effective. I checked: how had they done this? They had studied the effects of the drug on a very small sample of around two hundred women, for whom it was being prescribed only for 'mild to moderate morning sickness'.`
+    }
+];
+
+// Dynamically generate passages list up to 41
+for(let i = 4; i <= 41; i++) {
+    passages.push({
+        title: `BSF HCM TYPING TEST-${i}`,
+        text: passages[i % 3].text // Populating mock passages for complete structure demonstration
+    });
+}
+
+let selectedPassageIndex = 0;
+let timerInterval = null;
+let totalTimeInSeconds = 300;
+let timeRemaining = 300;
+let isTestRunning = false;
+let totalKeystrokes = 0;
+
+const passageSelect = document.getElementById('passageSelect');
+const passageBox = document.getElementById('passageBox');
+const typingArea = document.getElementById('typingArea');
+const timerDisplay = document.getElementById('timer');
+
+// Populate Passages Options
+passages.forEach((p, idx) => {
+    let opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = p.title;
+    passageSelect.appendChild(opt);
+});
+
+passageSelect.addEventListener('change', (e) => {
+    selectedPassageIndex = e.target.value;
+    resetTest();
+});
+
+function toggleCustomTime() {
+    const val = document.getElementById('timeLimit').value;
+    document.getElementById('customTimeGroup').style.display = (val === 'custom') ? 'flex' : 'none';
+}
+
+function renderPassage() {
+    passageBox.innerHTML = '';
+   
